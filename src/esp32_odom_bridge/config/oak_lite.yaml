@@ -1,0 +1,11 @@
+/oak:
+  ros__parameters:
+    pipeline_gen:
+      i_nn_type: none
+      i_enable_rgbd: true
+      i_pipeline_type: rgbd
+    stereo:
+      i_depth_preset: DEFAULT
+      i_fps: 10.0
+    rgb:
+      i_fps: 10.0

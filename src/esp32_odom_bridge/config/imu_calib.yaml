@@ -1,0 +1,23 @@
+calibration_timestamp: 1792906750.288127
+depthai_accel_mean:
+  x: 0.21850921273231505
+  y: 9.64273106765747
+  z: 1.2692381075620651
+depthai_accel_variance:
+  x: 0.0001
+  y: 0.0001
+  z: 0.0001
+depthai_gyro_bias:
+  x: 0.000595482830889523
+  y: -0.0006732471361756325
+  z: -0.007210775102488696
+depthai_gyro_variance:
+  x: 1.0e-05
+  y: 1.0e-05
+  z: 1.0e-05
+ros_body_mapping:
+  inferred_pitch_deg: 172.50146904645084
+  inferred_pitch_rad: 3.0107185993876504
+  yaw_rate_bias: 0.0006732471361756325
+  yaw_rate_variance: 1.0e-05
+samples_count: 1000

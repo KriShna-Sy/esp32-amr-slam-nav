@@ -1,0 +1,49 @@
+<!--
+  Landmark navigation BT (Nav2 Jazzy, BT.CPP v4)
+  - Plans once; replans only when the path becomes invalid or every 15 s.
+  - Recoveries (rotating): clear costmaps -> back up 15 cm slowly -> wait 5 s.
+    BackUp gets the robot out of "Start occupied" when it has stopped hugging furniture
+    (it only reverses along where it just came from; 15 cm at 5 cm/s, costmap-checked).
+-->
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <RecoveryNode number_of_retries="8" name="NavigateRecovery">
+      <PipelineSequence name="NavigateWithReplanning">
+        <ControllerSelector selected_controller="{selected_controller}" default_controller="FollowPath" topic_name="controller_selector"/>
+        <PlannerSelector selected_planner="{selected_planner}" default_planner="GridBased" topic_name="planner_selector"/>
+        <!-- Keep the SAME path: replan only if it becomes invalid (blocked) or every 15 s.
+             Replanning every 1 s on a static map made the lattice path flip with each
+             few-cm localization correction -> stop / spin / go oscillation. -->
+        <RateController hz="1.0">
+          <Fallback name="ReplanIfNeeded">
+            <ReactiveSequence name="KeepPath">
+              <Inverter>
+                <PathExpiringTimer seconds="15" path="{path}"/>
+              </Inverter>
+              <IsPathValid path="{path}"/>
+            </ReactiveSequence>
+            <RecoveryNode number_of_retries="1" name="ComputePathToPose">
+              <ComputePathToPose goal="{goal}" path="{path}" planner_id="{selected_planner}" error_code_id="{compute_path_error_code}"/>
+              <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
+            </RecoveryNode>
+          </Fallback>
+        </RateController>
+        <RecoveryNode number_of_retries="1" name="FollowPath">
+          <FollowPath path="{path}" controller_id="{selected_controller}" error_code_id="{follow_path_error_code}"/>
+          <ClearEntireCostmap name="ClearLocalCostmap-Context" service_name="local_costmap/clear_entirely_local_costmap"/>
+        </RecoveryNode>
+      </PipelineSequence>
+      <ReactiveFallback name="RecoveryFallback">
+        <GoalUpdated/>
+        <RoundRobin name="RecoveryActions">
+          <Sequence name="ClearingActions">
+            <ClearEntireCostmap name="ClearLocalCostmap-Subtree" service_name="local_costmap/clear_entirely_local_costmap"/>
+            <ClearEntireCostmap name="ClearGlobalCostmap-Subtree" service_name="global_costmap/clear_entirely_global_costmap"/>
+          </Sequence>
+          <BackUp backup_dist="0.15" backup_speed="0.05"/>
+          <Wait wait_duration="5.0"/>
+        </RoundRobin>
+      </ReactiveFallback>
+    </RecoveryNode>
+  </BehaviorTree>
+</root>

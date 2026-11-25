@@ -1,0 +1,11 @@
+build/
+install/
+log/
+__pycache__/
+*.pyc
+# maps / bags are large; keep them out of git
+*.db
+*.pcd
+*.ply
+*.bag
+*.mcap
