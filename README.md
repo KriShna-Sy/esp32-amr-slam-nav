@@ -20,7 +20,7 @@ saved landmarks** while avoiding obstacles, all on ROS 2 Jazzy.
 |---|---|
 | Base | 2-wheel differential drive, 0.56 m track, 125 mm wheels, IG52 planetary gear motors |
 | Drivers | 2 × IBT-2 (BTS7960) H-bridges, 20 kHz PWM |
-| MCU | ESP32 with quadrature encoders (15,902 ticks/rev), 50 Hz `ODO,<l>,<r>,<ms>` telemetry |
+| MCU | ESP32 with quadrature encoders (~47,000 ticks/rev (new motors)), 50 Hz `ODO,<l>,<r>,<ms>` telemetry |
 | Sensor | Luxonis OAK-D Lite (stereo depth + RGB + BMI270 IMU) at 1.24 m |
 
 ## What's inside
